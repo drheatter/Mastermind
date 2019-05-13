@@ -33,6 +33,10 @@ class Code
 		end
 		return_string
 	end
+
+	def to_s
+		@code
+	end
 end
 
 class ComputerPlayer
@@ -45,9 +49,9 @@ class ComputerPlayer
 	private
 
 	def generate_code()
-		code = ""
-		4.times { code += (1 + rand(6)).to_s }
-		code
+		code_string = ""
+		4.times { code_string += (1 + rand(6)).to_s }
+		Code.new(code_string)
 	end
 end
 
@@ -59,9 +63,14 @@ class Game
 
 	def play
 		print_instructions
+		won = false
 		4.times do
 			guess = get_guess
+			puts "Response: #{@cpu_player.code.check_guess(guess)}"
+			won = true if @cpu_player.code.is_correct?(guess)
+			break if @cpu_player.code.is_correct?(guess)
 		end
+		won ? win_message : loss_message
 	end
 
 	private
@@ -84,6 +93,14 @@ class Game
 			return input if input.match(/^[1-6]{4}$/)
 			puts "Invalid input, try again."
 		end
+	end
+
+	def win_message
+		puts "You won! Good job!"
+	end
+
+	def loss_message
+		puts "Sorry, you lost. The correct code was #{@cpu_player.code.to_s}."
 	end
 end
 
