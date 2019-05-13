@@ -35,11 +35,23 @@ class Code
 	end
 end
 
+class ComputerPlayer
+	attr_reader :code
+
+	def initialize
+		@code = generate_code
+	end
+
+	private
+
+	def generate_code()
+		code = ""
+		4.times { code += (1 + rand(6)).to_s}
+		code
+	end
+end
+
 
 #test stuff
-test_code = Code.new('1234')
-puts test_code.check_guess('1234')
-puts test_code.check_guess('1111')
-puts test_code.check_guess('6526')
-puts test_code.is_correct?('1234')
-puts test_code.is_correct?('1222')
+test_cpu = ComputerPlayer.new
+puts test_cpu.code
