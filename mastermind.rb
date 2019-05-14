@@ -46,10 +46,14 @@ class ComputerPlayer
 		generate_code
 	end
 
-	def generate_code()
+	def generate_code
 		code_string = ""
 		4.times { code_string += (1 + rand(6)).to_s }
 		@code = Code.new(code_string)
+	end
+
+	def make_guess
+		generate_code.to_s
 	end
 end
 
@@ -71,7 +75,22 @@ class Game
 
 	def play_cpu_guesser
 		code = get_human_code
-		puts code
+		cpu_won = false
+		4.times do
+			puts "The computer is thinking..."
+			sleep(3)
+			guess = cpu_guess_turn(code)
+			cpu_won = true if code.is_correct?(guess)
+			break if cpu_won
+		end
+		cpu_won ? cpu_win_message : human_win_message
+	end
+
+	def cpu_guess_turn(code)
+		guess  = @cpu_player.make_guess
+		puts "CPU's guess is #{guess}."
+		puts "Checking their guess: #{code.check_guess(guess)}"
+		guess
 	end
 
 	def get_human_code
@@ -116,7 +135,7 @@ class Game
 			guess = get_guess
 			puts "Response: #{@cpu_player.code.check_guess(guess)}"
 			won = true if @cpu_player.code.is_correct?(guess)
-			break if @cpu_player.code.is_correct?(guess)
+			break if won
 		end
 		won ? human_win_message : human_loss_message
 	end
@@ -142,11 +161,15 @@ class Game
 	end
 
 	def human_win_message
-		puts "You won! Good job!"
+		puts "You won! Congrats!"
 	end
 
 	def human_loss_message
 		puts "Sorry, you lost. The correct code was #{@cpu_player.code.to_s}."
+	end
+
+	def cpu_win_message
+		puts "The computer won! Better luck next time!"
 	end
 end
 
