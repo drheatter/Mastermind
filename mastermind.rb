@@ -65,6 +65,7 @@ class ComputerPlayer
 		@guess_result = nil
 		@valid_guess_numbers = ["1", "2", "3", "4", "5", "6"]
 		@valid_guess_by_index = []
+		@white_numbers = []
 		4.times { @valid_guess_by_index.push(["1", "2", "3", "4", "5", "6"]) }
 	end
 
@@ -91,7 +92,8 @@ class ComputerPlayer
 			if @guess_result[i] == "R"
 				@valid_guess_numbers.delete(@guess_string[i])
 			elsif @guess_result[i] == "W"
-				@valid_guess_by_index[i].delete(@guess_string[i])		
+				@valid_guess_by_index[i].delete(@guess_string[i])
+				@white_numbers.push(@guess_string[i]) unless @white_numbers.include?(@guess_string[i])
 			end
 		end
 	end
@@ -100,6 +102,12 @@ class ComputerPlayer
 
 	def get_valid_guess(i)
 		possible_numbers = @valid_guess_numbers & @valid_guess_by_index[i]
+		@white_numbers.each do |n|
+			if possible_numbers.include?(n)
+				@white_numbers.delete(n)
+				return n
+			end
+		end
 		possible_numbers.sample.to_s
 	end
 
