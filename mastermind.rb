@@ -62,12 +62,25 @@ class Game
 	def play
 		print_instructions
 		loop do
-			play_human_guesser
+			human_guesser? ? play_human_guesser : return
 			break unless play_again?
 		end
 	end
 
 	private
+
+	def human_guesser?
+		input = ""
+		loop do
+			puts "Would you like to be the guesser or the codemaker? (Use numeric inputs to answer.)"
+			puts "1 - Guesser"
+			puts "2 - Codemaker"
+			input = gets.chomp
+			break if input.match(/^[12]$/)
+			print "Invalid input. "
+		end
+		input == "1" ? true : false
+	end
 
 	def play_again?
 		input = ""
