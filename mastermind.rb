@@ -61,9 +61,9 @@ class ComputerPlayer
 
 	def initialize
 		@code = generate_code
-		@guess_string = @code.to_s
 		@guess_result = nil
 		@valid_guess_numbers = ["1", "2", "3", "4", "5", "6"]
+		@guess_string = @valid_guess_numbers.sample(4).join("")
 		@valid_guess_by_index = []
 		@white_numbers = []
 		4.times { @valid_guess_by_index.push(["1", "2", "3", "4", "5", "6"]) }
