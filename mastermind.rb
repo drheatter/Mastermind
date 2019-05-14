@@ -63,6 +63,26 @@ class Game
 
 	def play
 		print_instructions
+		loop do
+			play_human_guesser
+			break unless play_again?
+		end
+	end
+
+	private
+
+	def play_again?
+		input = ""
+		loop do
+			puts "Would you like to play again? (Y/N)"
+			input = gets.chomp
+			break if input.match(/^[ynYN]$/)
+			print "Invalid input. "
+		end
+		input.downcase == "y" ? true : false
+	end
+
+	def play_human_guesser
 		won = false
 		4.times do
 			guess = get_guess
@@ -70,10 +90,8 @@ class Game
 			won = true if @cpu_player.code.is_correct?(guess)
 			break if @cpu_player.code.is_correct?(guess)
 		end
-		won ? win_message : loss_message
+		won ? human_win_message : human_loss_message
 	end
-
-	private
 
 	def print_instructions
 		puts "Welcome to Mastermind!" 
@@ -95,16 +113,20 @@ class Game
 		end
 	end
 
-	def win_message
+	def human_win_message
 		puts "You won! Good job!"
 	end
 
-	def loss_message
+	def human_loss_message
 		puts "Sorry, you lost. The correct code was #{@cpu_player.code.to_s}."
 	end
 end
 
 
-#test stuff
-test_game = Game.new
-test_game.play
+game = Game.new
+game.play
+
+# Test stuff
+#test_code = Code.new('1234')
+#test_match = test_code.check_guess('3532')
+#puts test_match.split('')
