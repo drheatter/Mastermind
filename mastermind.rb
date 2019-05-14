@@ -34,6 +34,23 @@ class Code
 		return_string
 	end
 
+	# This method provides an alternate way to check guesses with letters
+	# instead of colored text. It's used for CPU player guesses. 
+	def cpu_check_guess(guess)
+		guess_char_array = guess.split('')
+		return_string = ''
+		guess_char_array.each_index do |i|
+			if guess_char_array[i] == @code[i]
+				return_string += "G"
+			elsif @code.include?(guess_char_array[i])
+				return_string += "W"
+			else
+				return_string += "R"
+			end
+		end
+		return_string
+	end
+
 	def to_s
 		@code
 	end
@@ -43,7 +60,10 @@ class ComputerPlayer
 	attr_reader :code
 
 	def initialize
-		generate_code
+		@code = generate_code
+		@guess_string = @code.to_s
+		@guess_result = nil
+		@valid_guess_numbers = ["1", "2", "3", "4", "5", "6"]
 	end
 
 	def generate_code
@@ -53,8 +73,25 @@ class ComputerPlayer
 	end
 
 	def make_guess
-		generate_code.to_s
+		return @guess_string unless @guess_result
+		code_string = ""
+		4.times do |i|
+			@guess_result[i] == "G" ? 
+				code_string += @guess_string[i] : code_string += @valid_guess_numbers.sample.to_s
+		end
+		@guess_string = code_string
+		@guess_string
 	end
+
+	def update_guess_logic(code)
+		@guess_result = code.cpu_check_guess(@guess_string)
+		@guess_result.split("").each_index do |i|
+			if @guess_result[i] == "R"
+				@valid_guess_numbers.delete(@guess_string[i])
+			end
+		end
+	end
+
 end
 
 class Game
@@ -66,6 +103,7 @@ class Game
 	def play
 		print_instructions
 		loop do
+			@cpu_player = ComputerPlayer.new
 			human_guesser? ? play_human_guesser : play_cpu_guesser
 			break unless play_again?
 		end
@@ -90,6 +128,7 @@ class Game
 		guess  = @cpu_player.make_guess
 		puts "CPU's guess is #{guess}."
 		puts "Checking their guess: #{code.check_guess(guess)}"
+		@cpu_player.update_guess_logic(code)
 		guess
 	end
 
@@ -176,8 +215,3 @@ end
 
 game = Game.new
 game.play
-
-# Test stuff
-#test_code = Code.new('1234')
-#test_match = test_code.check_guess('3532')
-#puts test_match.split('')
