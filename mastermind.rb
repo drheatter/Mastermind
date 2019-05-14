@@ -43,15 +43,13 @@ class ComputerPlayer
 	attr_reader :code
 
 	def initialize
-		@code = generate_code
+		generate_code
 	end
-
-	private
 
 	def generate_code()
 		code_string = ""
 		4.times { code_string += (1 + rand(6)).to_s }
-		Code.new(code_string)
+		@code = Code.new(code_string)
 	end
 end
 
@@ -84,6 +82,7 @@ class Game
 
 	def play_human_guesser
 		won = false
+		@cpu_player.generate_code
 		4.times do
 			guess = get_guess
 			puts "Response: #{@cpu_player.code.check_guess(guess)}"
