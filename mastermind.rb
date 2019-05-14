@@ -62,12 +62,28 @@ class Game
 	def play
 		print_instructions
 		loop do
-			human_guesser? ? play_human_guesser : return
+			human_guesser? ? play_human_guesser : play_cpu_guesser
 			break unless play_again?
 		end
 	end
 
 	private
+
+	def play_cpu_guesser
+		code = get_human_code
+		puts code
+	end
+
+	def get_human_code
+		input = ""
+		loop do
+			puts "Enter a code consisting of 4 digits between 1 and 6."
+			input = gets.chomp
+			break if input.match(/^[1-6]{4}$/)
+			print "Invalid code selection. "
+		end
+		Code.new(input)
+	end
 
 	def human_guesser?
 		input = ""
